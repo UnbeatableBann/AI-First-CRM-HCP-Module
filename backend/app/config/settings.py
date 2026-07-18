@@ -12,6 +12,7 @@ class Settings(BaseSettings):
     VERSION: str = "0.1.0"
     ENVIRONMENT: str = Field(default="development")
     HEALTH_CHECK_RETRIES: int = Field(default=3)
+    FRONTEND_URL: str = Field(default="http://localhost:5173")
 
     # Database
     POSTGRES_USER: str = Field(default="postgres")
