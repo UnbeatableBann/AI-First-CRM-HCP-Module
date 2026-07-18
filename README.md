@@ -7,12 +7,14 @@ Instead of manually filling out tedious forms, users can simply type or dictate 
 ## Tech Stack
 
 ### Frontend
+
 - **Framework:** React + Vite (TypeScript)
 - **State Management:** Redux Toolkit
 - **Forms:** React Hook Form with Zod validation
 - **Styling:** Tailwind CSS + Lucide React icons
 
 ### Backend
+
 - **Framework:** FastAPI (Python)
 - **Database:** PostgreSQL (with SQLAlchemy and asyncpg)
 - **AI/LLM:** LangGraph + Langchain + Groq API (LLaMA-3)
@@ -42,6 +44,7 @@ Instead of manually filling out tedious forms, users can simply type or dictate 
 ## Setup & Installation
 
 ### Prerequisites
+
 - [Docker](https://www.docker.com/) and Docker Compose
 - [Node.js](https://nodejs.org/) (v18+)
 - A [Groq API Key](https://console.groq.com/) for the AI capabilities
@@ -49,35 +52,47 @@ Instead of manually filling out tedious forms, users can simply type or dictate 
 ### 1. Backend Setup (Docker)
 
 1. Navigate to the backend directory:
+
    ```bash
    cd backend
    ```
+
 2. Set up your environment variables. Create a `.env` file in the `backend` folder containing your Groq API key:
+
    ```env
    GROQ_API_KEY=your_groq_api_key_here
    LLM_MODEL=llama-3.3-70b-versatile
    DATABASE_URL=postgresql+asyncpg://postgres:postgres@db:5432/crm_db
    ```
+
 3. Start the backend and database containers:
+
    ```bash
    docker compose up -d
    ```
+
    *This command will build the API container, pull the PostgreSQL image, run database migrations (Alembic), and expose the API on `http://localhost:8000`.*
 
 ### 2. Frontend Setup (React)
 
 1. Navigate to the frontend directory:
+
    ```bash
    cd frontend
    ```
+
 2. Install the Node modules:
+
    ```bash
    npm install
    ```
+
 3. Start the Vite development server:
+
    ```bash
    npm run dev
    ```
+
    *The frontend will now be accessible at `http://localhost:5173`. It is configured to automatically proxy API requests to the local backend on port 8000.*
 
 ---
