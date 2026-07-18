@@ -5,10 +5,18 @@ from typing import Optional
 import uuid
 from app.database.session import get_db
 from app.domains.interaction.service import InteractionService
-from app.domains.interaction.schemas import InteractionResponse
+from app.domains.interaction.schemas import InteractionResponse, InteractionHomeResponse
 from app.schemas.common import APIResponse
 
 router = APIRouter()
+
+
+@router.get("/home", response_model=APIResponse[InteractionHomeResponse])
+async def get_home(
+    db: AsyncSession = Depends(get_db),
+) -> APIResponse[InteractionHomeResponse]:
+    data = await InteractionService.get_home(db)
+    return APIResponse(status="success", message="Home loaded.", data=data)  # type: ignore
 
 
 @router.post("/draft", response_model=APIResponse[InteractionResponse])
@@ -46,3 +54,12 @@ async def complete_interaction(
 ) -> APIResponse[InteractionResponse]:
     interaction = await InteractionService.mark_completed(db, id)
     return APIResponse(status="success", message="Interaction completed.", data=interaction)  # type: ignore
+
+
+@router.delete("/{id}", response_model=APIResponse[None])
+async def delete_interaction(
+    id: uuid.UUID = Path(...),
+    db: AsyncSession = Depends(get_db),
+) -> APIResponse[None]:
+    await InteractionService.delete_interaction(db, id)
+    return APIResponse(status="success", message="Interaction deleted.", data=None)  # type: ignore

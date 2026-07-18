@@ -105,3 +105,31 @@ Instead of manually filling out tedious forms, users can simply type or dictate 
 3. **Live UI Sync:** Watch as the AI autonomously extracts the interaction type, date, time, attendees, topics, shared materials, and sentiment, instantly populating the manual form on the left.
 4. **Manual Edits:** You can seamlessly blend AI and manual entry. Edit any field on the form (like adding a custom "Sample Distributed" tag), and it will automatically save to the active draft.
 5. **Save:** When you're ready, simply tell the AI to save the interaction, and it will persist the structured data into the PostgreSQL database.
+
+---
+
+## Deployment (Cloudflare + VPS)
+
+To deploy this structure into production using **Cloudflare** for your domain (`crm.yourdomain.com` for the frontend and `api.yourdomain.com` for the backend):
+
+### 1. Backend Deployment (VPS / Render / Railway)
+Since Cloudflare Pages only hosts static files, your FastAPI backend and PostgreSQL database must be deployed to a stateful server like a VPS, Render, or Railway.
+
+1. Set up your backend on your server and expose it securely via HTTPS (e.g., `https://api.yourdomain.com`).
+2. Update your production `backend/.env` file:
+   - Make sure database credentials (`DATABASE_URL`) are completely different from your local development ones and secure.
+   - Set `FRONTEND_URL=https://crm.yourdomain.com` so the FastAPI CORS middleware exclusively allows requests from your Cloudflare Pages frontend.
+
+### 2. Frontend Deployment (Cloudflare Pages)
+1. Push your combined repository to GitHub/GitLab.
+2. In the **Cloudflare Dashboard**, navigate to **Workers & Pages** -> **Create application** -> **Pages** -> **Connect to Git**.
+3. Select this repository and set the following build configurations:
+   - **Framework preset:** `Vite`
+   - **Build command:** `npm run build`
+   - **Build directory:** `dist`
+   - **Root directory:** `/frontend`
+4. **Environment Variables (Important):**
+   - In your Cloudflare Pages build settings, add an environment variable:
+     `VITE_API_URL=https://api.yourdomain.com` (pointing to your production backend subdomain).
+5. Ensure the `frontend/public/_redirects` file exists in the repository with the content `/* /index.html 200` to allow Cloudflare to handle SPA (React Router) routing correctly.
+6. Connect your custom subdomain (`crm.yourdomain.com`) to the Cloudflare Pages project.
