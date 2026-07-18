@@ -1,0 +1,36 @@
+# Git
+.git
+.gitignore
+
+# Environments
+.env
+.env.*
+!.env.example
+.venv
+venv/
+env/
+
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Testing and Type Checking
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+tests/
+
+# IDEs and Editors
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Docker and Build files
+Dockerfile
+docker-compose.yml
+Makefile
+README.md
