@@ -10,6 +10,7 @@ NPM = npm --prefix $(FRONTEND_DIR)
 
 help:
 	@echo "Available commands:"
+	@echo "  make run                - Run frontend and backend (docker) concurrently"
 	@echo "  make install-all        - Install backend and frontend dependencies"
 	@echo "  --- Backend ---"
 	@echo "  make install-backend    - Install backend dependencies using uv"
@@ -35,6 +36,9 @@ help:
 
 # Combined
 install-all: install-backend install-frontend
+
+run:
+	$(MAKE) -j2 dev-frontend docker-up
 
 # Backend Commands
 install-backend:
