@@ -111,3 +111,9 @@ docker-logs:
 
 no-cache:
 	cd $(BACKEND_DIR) && docker compose build --no-cache
+
+docker-down-prod:
+	cd $(BACKEND_DIR) && docker compose -f docker-compose.prod.yml down
+
+docker-push:
+	cd $(BACKEND_DIR) && docker build -t unbeatablebann/ai-crm-backend:latest . && docker push unbeatablebann/ai-crm-backend:latest
