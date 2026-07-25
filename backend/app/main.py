@@ -1,6 +1,5 @@
 import logging
 
-from app.database import registry  # noqa: F401
 from fastapi import FastAPI
 from typing import Any
 from scalar_fastapi import get_scalar_api_reference
@@ -32,8 +31,8 @@ app = FastAPI(
 setup_middlewares(app)
 
 # Exception Handlers
-app.add_exception_handler(AppException, app_exception_handler)  # type: ignore
-app.add_exception_handler(RequestValidationError, validation_exception_handler)  # type: ignore
+app.add_exception_handler(AppException, app_exception_handler)
+app.add_exception_handler(RequestValidationError, validation_exception_handler)
 app.add_exception_handler(Exception, global_exception_handler)
 
 # Routers
