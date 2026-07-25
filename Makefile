@@ -11,6 +11,7 @@ NPM = npm --prefix $(FRONTEND_DIR)
 help:
 	@echo "Available commands:"
 	@echo "  make run                - Run frontend and backend (docker) concurrently"
+	@echo "  make run-prod           - Run frontend and backend (production docker) concurrently"
 	@echo "  make install-all        - Install backend and frontend dependencies"
 	@echo "  --- Backend ---"
 	@echo "  make install-backend    - Install backend dependencies using uv"
@@ -39,6 +40,9 @@ install-all: install-backend install-frontend
 
 run:
 	$(MAKE) -j2 dev-frontend docker-up
+
+run-prod:
+	$(MAKE) -j2 dev-frontend docker-up-prod
 
 # Backend Commands
 install-backend:
@@ -95,6 +99,9 @@ docker-build:
 
 docker-up:
 	cd $(BACKEND_DIR) && docker compose up
+
+docker-up-prod:
+	cd $(BACKEND_DIR) && docker compose -f docker-compose.prod.yml up
 
 docker-down:
 	cd $(BACKEND_DIR) && docker compose down
