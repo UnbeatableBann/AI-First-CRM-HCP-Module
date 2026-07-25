@@ -11,6 +11,9 @@ engine = create_async_engine(
     future=True,
     pool_size=10,
     max_overflow=20,
+    connect_args={
+        "ssl": "require",
+    },
 )
 
 # Create session maker

@@ -1,3 +1,5 @@
+import logging
+
 from app.database import registry  # noqa: F401
 from fastapi import FastAPI
 from typing import Any
@@ -16,11 +18,14 @@ from app.exceptions.handlers import (
 from app.core.logger import setup_logging
 
 setup_logging()
+logger = logging.getLogger(__name__)
 
 app = FastAPI(
     title="AI-First Healthcare CRM API",
     description="Backend for the AI-First CRM focusing on HCPs.",
     version="0.1.0",
+    docs_url=None,
+    redoc_url=None,
 )
 
 # Setup Middlewares
