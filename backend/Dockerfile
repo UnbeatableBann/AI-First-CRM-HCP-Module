@@ -33,5 +33,5 @@ COPY --chown=appuser:appuser . /app
 
 EXPOSE 8000
 
-# Run the application using the absolute path to uvicorn
-CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000"]
+# Run migrations and then start the application using the port provided by the environment
+CMD ["sh", "-c", "alembic upgrade head && uvicorn app.main:app --host 0.0.0.0 --port ${PORT:-8000}"]

@@ -186,6 +186,7 @@ async def execute_tools_and_update(state: GraphState) -> GraphState:
                         
                     # Persist Interaction
                     from app.domains.interaction.models import Interaction
+                    from app.domains.interaction.service import InteractionService
                     from datetime import datetime
                     
                     parsed_date = None
@@ -202,22 +203,22 @@ async def execute_tools_and_update(state: GraphState) -> GraphState:
                         except ValueError:
                             pass
 
-                    new_interaction = Interaction(
-                        id=interaction_id,
-                        hcp_id=hcp_id,
-                        status="COMPLETED",
-                        interaction_type=interaction.get("interaction_type"),
-                        date=parsed_date,
-                        time=parsed_time,
-                        attendees=interaction.get("attendees"),
-                        topics_discussed=interaction.get("topics_discussed"),
-                        materials_shared=interaction.get("materials_shared"),
-                        samples_distributed=interaction.get("samples_distributed"),
-                        sentiment=interaction.get("sentiment"),
-                        outcomes=interaction.get("outcomes"),
-                        follow_up_actions=interaction.get("follow_up_actions")
-                    )
-                    db.add(new_interaction)
+                    update_data = {
+                        "hcp_id": hcp_id,
+                        "status": "COMPLETED",
+                        "interaction_type": interaction.get("interaction_type"),
+                        "date": parsed_date,
+                        "time": parsed_time,
+                        "attendees": interaction.get("attendees"),
+                        "topics_discussed": interaction.get("topics_discussed"),
+                        "materials_shared": interaction.get("materials_shared"),
+                        "samples_distributed": interaction.get("samples_distributed"),
+                        "sentiment": interaction.get("sentiment"),
+                        "outcomes": interaction.get("outcomes"),
+                        "follow_up_actions": interaction.get("follow_up_actions")
+                    }
+                    
+                    await InteractionService.update_interaction(db, interaction_id, update_data)
                     await db.commit()
                     
                     tool_output = "Interaction successfully persisted to PostgreSQL database."

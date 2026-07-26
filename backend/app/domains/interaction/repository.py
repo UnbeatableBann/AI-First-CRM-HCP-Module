@@ -11,10 +11,42 @@ class InteractionRepository(BaseRepository[Interaction, InteractionCreate, Inter
     async def get_history_by_hcp(self, db: AsyncSession, hcp_id: uuid.UUID) -> list[Interaction]:
         result = await db.execute(
             select(Interaction)
-            .where(Interaction.hcp_id == hcp_id)
+            .where(
+                Interaction.hcp_id == hcp_id, 
+                Interaction.status == "COMPLETED", 
+                Interaction.is_deleted.is_(False)
+            )
             .order_by(Interaction.date.desc().nullslast(), Interaction.created_at.desc())
         )
         return list(result.scalars().all())
+
+    async def get_drafts(self, db: AsyncSession) -> list[Interaction]:
+        result = await db.execute(
+            select(Interaction)
+            .where(Interaction.status == "DRAFT", Interaction.is_deleted.is_(False))
+            .order_by(Interaction.updated_at.desc())
+        )
+        return list(result.scalars().all())
+
+    async def get_saved_hcps(self, db: AsyncSession):
+        from sqlalchemy import func
+        from app.domains.hcp.models import HCP
+        
+        # Join Interactions with HCP, group by HCP, return count and max date
+        query = (
+            select(
+                HCP.id.label("hcp_id"),
+                HCP.name.label("hcp_name"),
+                func.count(Interaction.id).label("interaction_count"),
+                func.max(Interaction.date).label("latest_interaction"),
+            )
+            .join(Interaction, Interaction.hcp_id == HCP.id)
+            .where(Interaction.status == "COMPLETED", Interaction.is_deleted.is_(False))
+            .group_by(HCP.id, HCP.name)
+            .order_by(func.max(Interaction.date).desc().nullslast())
+        )
+        result = await db.execute(query)
+        return result.all()
 
 
 interaction_repo = InteractionRepository(Interaction)

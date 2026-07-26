@@ -63,6 +63,49 @@ class InteractionService:
         return await interaction_repo.get_history_by_hcp(db, hcp_id)
 
     @staticmethod
+    async def get_home(db: AsyncSession) -> dict[str, Any]:
+        drafts_db = await interaction_repo.get_drafts(db)
+        saved_hcps_db = await interaction_repo.get_saved_hcps(db)
+
+        # Format drafts to include hcp_name if available
+        # Wait, the HCP relationship is not eager loaded in get_drafts by default if we didn't specify joinedload,
+        # but we can fetch them or just let the lazy load happen if using async properly, 
+        # actually, let's eager load or just fetch manually.
+        # It's better to fetch hcp for each draft if hcp_id is present.
+        drafts_res = []
+        for d in drafts_db:
+            hcp_name = None
+            if d.hcp_id:
+                hcp = await hcp_repo.get(db, d.hcp_id)
+                if hcp:
+                    hcp_name = hcp.name
+            drafts_res.append({
+                "id": d.id,
+                "hcp_name": hcp_name,
+                "updated_at": d.updated_at,
+                "status": d.status
+            })
+
+        saved_hcps_res = [
+            {
+                "hcp_id": row.hcp_id,
+                "hcp_name": row.hcp_name,
+                "interaction_count": row.interaction_count,
+                "latest_interaction": row.latest_interaction,
+            }
+            for row in saved_hcps_db
+        ]
+
+        return {
+            "drafts": drafts_res,
+            "saved_hcps": saved_hcps_res,
+        }
+
+    @staticmethod
+    async def delete_interaction(db: AsyncSession, interaction_id: uuid.UUID) -> None:
+        await interaction_repo.remove(db, id=interaction_id)
+
+    @staticmethod
     async def add_chat_message(
         db: AsyncSession, interaction_id: uuid.UUID, msg_in: ChatMessageCreate
     ) -> ChatMessage:
