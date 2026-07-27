@@ -47,7 +47,7 @@ export const HCPGrid: React.FC<{ hcps: SavedHCP[], onOpenWorkspace: (id: string)
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
-        {filteredHcps.slice(0, 4).map((hcp, i) => (
+        {filteredHcps.slice(0, 4).map((hcp) => (
           <motion.div 
             key={hcp.hcp_id}
             whileHover={{ scale: 1.02 }}

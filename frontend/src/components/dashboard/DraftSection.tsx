@@ -30,7 +30,7 @@ export const DraftSection: React.FC<DraftSectionProps> = ({ drafts, onResume, on
         </div>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
-          {displayDrafts.map((draft, i) => (
+          {displayDrafts.map((draft) => (
             <motion.div 
               key={draft.id}
               whileHover={{ scale: 1.02 }}
