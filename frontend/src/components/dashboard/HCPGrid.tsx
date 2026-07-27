@@ -11,7 +11,13 @@ interface SavedHCP {
 
 export const HCPGrid: React.FC<{ hcps: SavedHCP[], onOpenWorkspace: (id: string) => void }> = ({ hcps, onOpenWorkspace }) => {
   const [filter, setFilter] = useState('All');
+  const [searchQuery, setSearchQuery] = useState('');
   
+  const filteredHcps = hcps.filter(hcp => {
+    if (!hcp.hcp_name) return false;
+    return hcp.hcp_name.toLowerCase().includes(searchQuery.toLowerCase());
+  });
+
   return (
     <motion.section initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.15, delay: 0.45 }}>
       <h2 className="text-[20px] font-medium text-[#111827] mb-5">HCP Directory</h2>
@@ -32,6 +38,8 @@ export const HCPGrid: React.FC<{ hcps: SavedHCP[], onOpenWorkspace: (id: string)
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#6B7280]" />
           <input 
             type="text" 
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
             placeholder="Search directory..." 
             className="w-full sm:w-[240px] h-9 pl-9 pr-4 bg-white border border-[#ECEEF2] rounded-[12px] text-[14px] focus:outline-none focus:border-[#2563EB] transition-colors"
           />
@@ -39,7 +47,7 @@ export const HCPGrid: React.FC<{ hcps: SavedHCP[], onOpenWorkspace: (id: string)
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
-        {hcps.slice(0, 4).map((hcp, i) => (
+        {filteredHcps.slice(0, 4).map((hcp, i) => (
           <motion.div 
             key={hcp.hcp_id}
             whileHover={{ scale: 1.02 }}
