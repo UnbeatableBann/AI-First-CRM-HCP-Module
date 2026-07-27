@@ -38,8 +38,8 @@ export const DraftSection: React.FC<DraftSectionProps> = ({ drafts, onResume, on
             >
               <div className="flex justify-between items-start mb-4">
                 <div>
-                  <h3 className="text-[16px] font-medium text-[#111827] truncate pr-4">{draft.hcp_name || 'Meeting with Unknown'}</h3>
-                  <p className="text-[12px] text-[#6B7280] mt-1">{new Date(draft.updated_at).toLocaleDateString()}</p>
+                  <h3 className="text-[16px] font-medium text-[#111827] truncate pr-4">{draft.hcp_name || 'Untitled Interaction'}</h3>
+                  <p className="text-[12px] text-[#6B7280] mt-1">{draft.hcp_name ? `Started ${new Date(draft.updated_at).toLocaleDateString()}` : 'No HCP Selected'}</p>
                 </div>
                 <button 
                   onClick={(e) => { e.stopPropagation(); onDelete(draft.id); }}

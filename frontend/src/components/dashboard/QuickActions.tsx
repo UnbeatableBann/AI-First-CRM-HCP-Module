@@ -1,13 +1,13 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { Plus, Search, Sparkles, Download } from 'lucide-react';
+import { Plus, Search, Sparkles, UserPlus } from 'lucide-react';
 
 export const QuickActions: React.FC<{ onNewInteraction: () => void }> = ({ onNewInteraction }) => {
   const actions = [
     { icon: <Plus className="w-6 h-6" />, title: "New Interaction", desc: "Start drafting", onClick: onNewInteraction, color: "text-[#2563EB]", bg: "bg-[#2563EB]/10" },
     { icon: <Search className="w-6 h-6" />, title: "Search HCP", desc: "View directories", onClick: () => {}, color: "text-[#16A34A]", bg: "bg-[#16A34A]/10" },
     { icon: <Sparkles className="w-6 h-6" />, title: "AI Assistant", desc: "Get insights", onClick: () => {}, color: "text-[#F59E0B]", bg: "bg-[#F59E0B]/10" },
-    { icon: <Download className="w-6 h-6" />, title: "Import HCP", desc: "Upload CSV", onClick: () => {}, color: "text-[#6B7280]", bg: "bg-[#F3F4F6]" },
+    { icon: <UserPlus className="w-6 h-6" />, title: "New HCP", desc: "Add doctor manually", onClick: () => {}, color: "text-[#6B7280]", bg: "bg-[#F3F4F6]" },
   ];
 
   return (
