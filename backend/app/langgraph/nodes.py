@@ -221,7 +221,11 @@ async def execute_tools_and_update(state: GraphState) -> GraphState:
                     await InteractionService.update_interaction(db, interaction_id, update_data)
                     await db.commit()
                     
-                    tool_output = "Interaction successfully persisted to PostgreSQL database."
+                    # Update HCP Memory automatically after saving interaction
+                    from app.domains.hcp_workspace.service import HCPWorkspaceService
+                    await HCPWorkspaceService.update_hcp_memory_tool(db, hcp_id, update_data)
+                    
+                    tool_output = "Interaction successfully persisted to PostgreSQL database and HCP Memory updated."
             except Exception as e:
                 tool_output = f"Error executing tool: {e}"
                 

@@ -53,7 +53,15 @@ const LogInteraction: React.FC = () => {
           <h1 className="text-2xl font-bold tracking-tight text-slate-800">
             {isCompleted ? 'View Interaction' : 'Log HCP Interaction'}
           </h1>
-          {isCompleted && <span className="text-sm font-medium text-emerald-600 bg-emerald-50 px-2 py-1 rounded-md ml-2">Completed</span>}
+          {isCompleted && <span className="text-sm font-medium text-emerald-600 bg-emerald-50 px-2 py-1 rounded-md ml-2 inline-block mt-1">Completed</span>}
+          {currentDraft.hcp_id && (
+            <button 
+              onClick={() => navigate(`/hcp/${currentDraft.hcp_id}`)}
+              className="ml-4 text-sm text-blue-600 hover:underline font-medium inline-flex items-center gap-1"
+            >
+              Open HCP Workspace &rarr;
+            </button>
+          )}
         </div>
       </div>
       
