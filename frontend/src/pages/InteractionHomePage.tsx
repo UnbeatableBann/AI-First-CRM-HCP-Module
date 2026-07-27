@@ -82,7 +82,7 @@ export default function InteractionHomePage() {
   return (
     <div className="bg-[#FAFBFC] min-h-screen font-sans">
       <div className="max-w-[1600px] mx-auto px-4 sm:px-8 py-8">
-        <DashboardHeader />
+        <DashboardHeader drafts={drafts} savedHcps={savedHcps} onOpenWorkspace={handleOpenWorkspace} onResumeDraft={handleResumeDraft} />
         
         <div className="mt-8 flex flex-col lg:flex-row gap-8">
           {/* Main Dashboard (70%) */}
