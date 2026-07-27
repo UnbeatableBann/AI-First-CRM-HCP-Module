@@ -157,7 +157,7 @@ export default function InteractionHomePage() {
             {savedHcps.map((hcp) => (
               <div
                 key={hcp.hcp_id}
-                onClick={() => navigate(`/hcps/${hcp.hcp_id}/interactions`)}
+                onClick={() => navigate(`/hcp/${hcp.hcp_id}`)}
                 className="group relative bg-white rounded-xl p-5 border border-slate-200/60 shadow-sm hover:shadow-xl hover:border-emerald-200/60 transition-all duration-300 cursor-pointer overflow-hidden"
               >
                 <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-emerald-400 to-emerald-600 transform origin-left scale-x-0 group-hover:scale-x-100 transition-transform duration-300"></div>
