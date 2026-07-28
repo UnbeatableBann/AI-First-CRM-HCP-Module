@@ -5,7 +5,7 @@ import { setDraft } from '../../features/interaction/interactionSlice';
 import InteractionForm from '../../components/forms/InteractionForm';
 import ChatPanel from '../../components/chat/ChatPanel';
 import api from '../../services/api/axios';
-import { ArrowLeft } from 'lucide-react';
+import { ArrowLeft, Trash2 } from 'lucide-react';
 
 const LogInteraction: React.FC = () => {
   const { id } = useParams<{ id: string }>();
@@ -40,6 +40,19 @@ const LogInteraction: React.FC = () => {
 
   const isCompleted = currentDraft.status === 'COMPLETED';
 
+  const handleDeleteDraft = async () => {
+    if (!window.confirm("Are you sure you want to delete this draft interaction?")) return;
+    try {
+      setLoading(true);
+      await api.delete(`/interaction/${id}`);
+      navigate('/');
+    } catch (error) {
+      console.error('Failed to delete draft:', error);
+      alert('Failed to delete draft.');
+      setLoading(false);
+    }
+  };
+
   return (
     <div className="flex flex-col h-full w-full max-w-[1400px] mx-auto p-4 md:p-6 lg:p-8">
       <div className="mb-6 flex items-center gap-4">
@@ -49,19 +62,30 @@ const LogInteraction: React.FC = () => {
         >
           <ArrowLeft className="w-5 h-5" />
         </button>
-        <div>
+        <div className="flex-1">
           <h1 className="text-2xl font-bold tracking-tight text-slate-800">
             {isCompleted ? 'View Interaction' : 'Log HCP Interaction'}
           </h1>
-          {isCompleted && <span className="text-sm font-medium text-emerald-600 bg-emerald-50 px-2 py-1 rounded-md ml-2 inline-block mt-1">Completed</span>}
-          {currentDraft.hcp_id && (
-            <button 
-              onClick={() => navigate(`/hcp/${currentDraft.hcp_id}`)}
-              className="ml-4 text-sm text-blue-600 hover:underline font-medium inline-flex items-center gap-1"
-            >
-              Open HCP Workspace &rarr;
-            </button>
-          )}
+          <div className="flex items-center gap-3 mt-1.5">
+            {isCompleted && <span className="text-sm font-medium text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded-md">Completed</span>}
+            {currentDraft.hcp_id && (
+              <button 
+                onClick={() => navigate(`/hcp/${currentDraft.hcp_id}`)}
+                className="text-sm text-blue-600 hover:underline font-medium inline-flex items-center gap-1"
+              >
+                Open HCP Workspace &rarr;
+              </button>
+            )}
+            {!isCompleted && (
+              <button 
+                onClick={handleDeleteDraft}
+                className="text-sm text-red-600 hover:text-red-700 bg-red-50 hover:bg-red-100 px-2 py-0.5 rounded-md font-medium inline-flex items-center gap-1 transition-colors"
+              >
+                <Trash2 className="w-3.5 h-3.5" />
+                Delete Draft
+              </button>
+            )}
+          </div>
         </div>
       </div>
       

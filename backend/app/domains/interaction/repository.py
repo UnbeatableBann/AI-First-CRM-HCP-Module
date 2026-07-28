@@ -21,8 +21,10 @@ class InteractionRepository(BaseRepository[Interaction, InteractionCreate, Inter
         return list(result.scalars().all())
 
     async def get_drafts(self, db: AsyncSession) -> list[Interaction]:
+        from sqlalchemy.orm import joinedload
         result = await db.execute(
             select(Interaction)
+            .options(joinedload(Interaction.hcp))
             .where(Interaction.status == "DRAFT", Interaction.is_deleted.is_(False))
             .order_by(Interaction.updated_at.desc())
         )

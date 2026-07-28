@@ -15,9 +15,15 @@ from app.exceptions.handlers import (
 )
 
 from app.core.logger import setup_logging
+from app.modules.knowledge_pipeline.subscribers import register_subscribers as register_knowledge_subscribers
+from app.modules.digital_twin.subscribers import register_subscribers as register_twin_subscribers
+from app.modules.mission_control.subscribers import register_subscribers as register_mission_subscribers
 
 setup_logging()
 logger = logging.getLogger(__name__)
+register_knowledge_subscribers()
+register_twin_subscribers()
+register_mission_subscribers()
 
 app = FastAPI(
     title="AI-First Healthcare CRM API",

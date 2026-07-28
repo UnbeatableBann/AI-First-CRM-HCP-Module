@@ -67,18 +67,10 @@ class InteractionService:
         drafts_db = await interaction_repo.get_drafts(db)
         saved_hcps_db = await interaction_repo.get_saved_hcps(db)
 
-        # Format drafts to include hcp_name if available
-        # Wait, the HCP relationship is not eager loaded in get_drafts by default if we didn't specify joinedload,
-        # but we can fetch them or just let the lazy load happen if using async properly, 
-        # actually, let's eager load or just fetch manually.
-        # It's better to fetch hcp for each draft if hcp_id is present.
+        # drafts_db now eager loads HCP via joinedload
         drafts_res = []
         for d in drafts_db:
-            hcp_name = None
-            if d.hcp_id:
-                hcp = await hcp_repo.get(db, d.hcp_id)
-                if hcp:
-                    hcp_name = hcp.name
+            hcp_name = d.hcp.name if getattr(d, 'hcp', None) else None
             drafts_res.append({
                 "id": d.id,
                 "hcp_name": hcp_name,

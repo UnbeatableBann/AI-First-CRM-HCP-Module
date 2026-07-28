@@ -47,12 +47,25 @@ async def update_interaction(
     return APIResponse(status="success", message="Interaction updated.", data=interaction)  # type: ignore
 
 
+from app.core.events.dispatcher import dispatcher
+from app.core.events.events import InteractionSavedEvent
+import json
+
 @router.post("/{id}/complete", response_model=APIResponse[InteractionResponse])
 async def complete_interaction(
     id: uuid.UUID = Path(...),
     db: AsyncSession = Depends(get_db),
 ) -> APIResponse[InteractionResponse]:
     interaction = await InteractionService.mark_completed(db, id)
+    
+    if interaction and getattr(interaction, "hcp_id", None):
+        content = ""
+        try:
+            content = interaction.model_dump_json()
+        except BaseException:
+            content = str(interaction)
+        await dispatcher.publish(InteractionSavedEvent(interaction_id=id, hcp_id=interaction.hcp_id, content=content))
+        
     return APIResponse(status="success", message="Interaction completed.", data=interaction)  # type: ignore
 
 

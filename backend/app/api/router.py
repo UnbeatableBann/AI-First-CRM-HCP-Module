@@ -10,6 +10,11 @@ from app.api.endpoints import agent
 from app.domains.interaction import router as interaction_router
 from app.domains.hcp import router as hcp_router
 from app.domains.hcp_workspace import router as hcp_workspace_router
+from app.modules.knowledge.router import router as knowledge_router
+from app.modules.digital_twin.router import router as digital_twin_router
+from app.modules.planning.router import router as planning_router
+from app.modules.mission_control.router import router as mission_control_router
+from app.modules.autonomous_agent.router import router as autonomous_agent_router
 
 logger = structlog.get_logger(__name__)
 
@@ -19,6 +24,11 @@ api_router.include_router(agent.router, prefix="/agent", tags=["agent"])
 api_router.include_router(interaction_router.router, prefix="/interaction", tags=["interaction"])
 api_router.include_router(hcp_router.router, prefix="/hcp", tags=["hcp"])
 api_router.include_router(hcp_workspace_router.router, prefix="/hcp", tags=["hcp-workspace"])
+api_router.include_router(knowledge_router)
+api_router.include_router(digital_twin_router)
+api_router.include_router(planning_router)
+api_router.include_router(mission_control_router)
+api_router.include_router(autonomous_agent_router)
 
 
 @api_router.get("/health", tags=["system"])

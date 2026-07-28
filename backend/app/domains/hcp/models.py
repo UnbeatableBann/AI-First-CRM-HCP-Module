@@ -3,8 +3,7 @@ from sqlalchemy.orm import Mapped, mapped_column, relationship
 from typing import List, TYPE_CHECKING, Optional
 from app.models.base import Base
 
-if TYPE_CHECKING:
-    from app.domains.interaction.models import Interaction
+from app.domains.interaction.models import Interaction
 
 
 class HCP(Base):
