@@ -20,7 +20,7 @@ export default function HCPDirectoryPage() {
       try {
         setLoading(true);
         const [hcpRes, intRes] = await Promise.all([
-          api.get('/hcp'),
+          api.get('/hcp/'),
           api.get('/interaction/home')
         ]);
         

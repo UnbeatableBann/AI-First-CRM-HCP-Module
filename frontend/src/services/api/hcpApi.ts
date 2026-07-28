@@ -3,7 +3,7 @@ import { HCP, Interaction } from '../../types';
 
 export const hcpApi = {
   searchHCPs: async (query: string): Promise<HCP[]> => {
-    const response = await api.get(`/hcp`);
+    const response = await api.get(`/hcp/`);
     const hcps = response.data.data;
     if (query) {
       return hcps.filter((h: HCP) => h.name.toLowerCase().includes(query.toLowerCase()));

@@ -19,7 +19,7 @@ export default function InteractionHomePage() {
         const [missionRes, interactionRes, hcpRes] = await Promise.all([
           api.get(`/mission-control`),
           api.get('/interaction/home'),
-          api.get('/hcp')
+          api.get('/hcp/')
         ]);
         setMissionData(missionRes.data.data);
         setInteractionData(interactionRes.data.data);
