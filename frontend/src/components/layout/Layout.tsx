@@ -74,7 +74,7 @@ export const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) =>
       }
       try {
         const [hcpRes, intRes] = await Promise.all([
-          api.get('/hcp'),
+          api.get('/hcp/'),
           api.get('/interaction/home')
         ]);
         
