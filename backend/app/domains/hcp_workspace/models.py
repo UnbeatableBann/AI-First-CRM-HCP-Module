@@ -15,3 +15,5 @@ class HCPMemory(Base):
     preferred_meeting_time = Column(String, nullable=True)
     favorite_materials = Column(JSON, nullable=True)
     notes = Column(String, nullable=True)
+    key_learnings = Column(JSON, nullable=True)
+    behavioral_profile = Column(String, nullable=True)

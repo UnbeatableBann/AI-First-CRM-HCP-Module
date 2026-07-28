@@ -1,28 +1,35 @@
-﻿@tailwind base;
+@tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 @layer base {
   :root {
-    --background: 0 0% 100%;
-    --foreground: 222.2 84% 4.9%;
-    --card: 0 0% 100%;
-    --card-foreground: 222.2 84% 4.9%;
-    --popover: 0 0% 100%;
-    --popover-foreground: 222.2 84% 4.9%;
-    --primary: 222.2 47.4% 11.2%;
-    --primary-foreground: 210 40% 98%;
-    --secondary: 210 40% 96.1%;
-    --secondary-foreground: 222.2 47.4% 11.2%;
-    --muted: 210 40% 96.1%;
-    --muted-foreground: 215.4 16.3% 46.9%;
-    --accent: 210 40% 96.1%;
-    --accent-foreground: 222.2 47.4% 11.2%;
-    --destructive: 0 84.2% 60.2%;
-    --destructive-foreground: 210 40% 98%;
-    --border: 214.3 31.8% 91.4%;
-    --input: 214.3 31.8% 91.4%;
-    --ring: 222.2 84% 4.9%;
+    --background: #F6F8FB;
+    --surface: #FFFFFF;
+    --surface-secondary: #F2F5F9;
+    --foreground: #172033;
+    --foreground-secondary: #5F6B7A;
+    --muted: #98A2B3;
+    --border: #DCE3EA;
+    
+    --primary: #1E3A8A;
+    --primary-hover: #1D4ED8;
+    --secondary: #0F172A;
+    --accent: #14B8A6;
+    --ai: #4F46E5;
+    
+    --success: #10B981;
+    --warning: #F59E0B;
+    --danger: #DC2626;
+    --info: #1E3A8A;
+    
+    --sidebar-bg: #FFFFFF;
+    --sidebar-text: #5F6B7A;
+    --sidebar-active: #F6F8FB;
+    --sidebar-active-text: #1E3A8A;
+    --sidebar-border: #DCE3EA;
+    
+    --ring: #1E3A8A;
     --radius: 0.5rem;
   }
 }

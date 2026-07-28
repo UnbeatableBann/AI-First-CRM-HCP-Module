@@ -8,8 +8,9 @@ import HCPOverview from '../components/hcp/HCPOverview';
 import HCPTimeline from '../components/hcp/HCPTimeline';
 import HCPMemory from '../components/hcp/HCPMemory';
 import HCPInsights from '../components/hcp/HCPInsights';
+import MeetingBriefTab from '../components/hcp/MeetingBriefTab';
 
-const TABS = ['Overview', 'Timeline', 'AI Memory', 'Insights'];
+const TABS = ['Meeting Brief', 'Overview', 'Timeline', 'AI Memory', 'Insights'];
 
 const HCPWorkspacePage: React.FC = () => {
   const { hcpId } = useParams<{ hcpId: string }>();
@@ -76,6 +77,9 @@ const HCPWorkspacePage: React.FC = () => {
 
         {/* Tab Content */}
         <div className="min-h-[400px]">
+          {selectedTab === 'Meeting Brief' && (
+            <MeetingBriefTab hcpId={hcpId!} />
+          )}
           {selectedTab === 'Overview' && (
             <HCPOverview 
               overview={workspace.overview} 

@@ -65,7 +65,7 @@ class HCPWorkspaceService:
         overview = HCPWorkspaceService._generate_overview(interactions)
 
         # Generate Insights dynamically
-        insights = HCPWorkspaceService._generate_insights(interactions, memory)
+        insights = HCPWorkspaceService._generate_insights(interactions, memory_obj)
 
         return {
             "profile": profile,
@@ -100,7 +100,7 @@ class HCPWorkspaceService:
         }
 
     @staticmethod
-    def _generate_insights(interactions: List[Interaction], memory: dict) -> dict:
+    def _generate_insights(interactions: List[Interaction], memory_obj) -> dict:
         if not interactions:
             return {
                 "relationship_summary": "No interactions yet.",
@@ -108,7 +108,9 @@ class HCPWorkspaceService:
                 "most_discussed_product": "None",
                 "overall_sentiment": "Unknown",
                 "follow_up_pending": "None",
-                "latest_ai_summary": "No data to summarize."
+                "latest_ai_summary": "No data to summarize.",
+                "key_learnings": [],
+                "behavioral_profile": None
             }
             
         sentiments = [getattr(i, "sentiment", "") for i in interactions if getattr(i, "sentiment", None)]
@@ -127,7 +129,9 @@ class HCPWorkspaceService:
             "most_discussed_product": most_discussed_product,
             "overall_sentiment": overall_sentiment,
             "follow_up_pending": getattr(interactions[0], "follow_up_actions", "None") if interactions else "None",
-            "latest_ai_summary": "Generated insights based on interaction frequency."
+            "latest_ai_summary": "Generated insights based on interaction frequency.",
+            "key_learnings": getattr(memory_obj, "key_learnings", []) if memory_obj else [],
+            "behavioral_profile": getattr(memory_obj, "behavioral_profile", None) if memory_obj else None
         }
 
     @staticmethod
@@ -143,12 +147,15 @@ class HCPWorkspaceService:
                 "common_objections": memory_obj.common_objections or [],
                 "preferred_meeting_time": memory_obj.preferred_meeting_time,
                 "favorite_materials": memory_obj.favorite_materials or [],
-                "notes": memory_obj.notes
+                "notes": memory_obj.notes,
+                "key_learnings": memory_obj.key_learnings or [],
+                "behavioral_profile": memory_obj.behavioral_profile
             }
 
         system_prompt = f"""You are an AI specialized in extracting and maintaining long-term Healthcare Professional (HCP) memory profiles.
 Your task is to merge new interaction data with the existing HCP memory.
 Never duplicate list items (always merge uniquely). Do not overwrite existing long-term preferences unless the new interaction explicitly indicates a change.
+Also extract insightful `key_learnings` (max 5 short bullet points) and a comprehensive `behavioral_profile` summary paragraph based on the interaction history.
 
 Current Memory:
 {json.dumps(current_memory, indent=2)}
@@ -164,7 +171,9 @@ Return ONLY a JSON object with the updated memory matching this structure exactl
   "common_objections": ["string"],
   "preferred_meeting_time": "string or null",
   "favorite_materials": ["string"],
-  "notes": "string or null"
+  "notes": "string or null",
+  "key_learnings": ["string"],
+  "behavioral_profile": "string or null"
 }}
 Ensure the output starts with ```json and ends with ```
 """

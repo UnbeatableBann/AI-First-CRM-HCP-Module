@@ -67,7 +67,7 @@ const initialState: HCPWorkspaceState = {
   workspace: null,
   loading: false,
   error: null,
-  selectedTab: 'Overview'
+  selectedTab: 'Meeting Brief'
 };
 
 export const fetchWorkspace = createAsyncThunk(
