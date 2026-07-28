@@ -10,6 +10,7 @@ export default defineConfig({
     },
   },
   esbuild: {
+    // @ts-ignore - 'drop' is a valid esbuild option but might not be in the local Vite TS types
     drop: ['console', 'debugger'],
   },
 })
