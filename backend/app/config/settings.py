@@ -24,7 +24,8 @@ class Settings(BaseSettings):
     POSTGRES_PORT: Optional[int] = Field(default=None)
 
     @model_validator(mode='after')
-    def assemble_db_connection(self) -> 'Settings':
+    def assemble_env_vars(self) -> 'Settings':
+        # Database URL
         if not self.DATABASE_URL:
             user = self.POSTGRES_USER or "postgres"
             password = self.POSTGRES_PASSWORD or "postgres"
@@ -32,6 +33,25 @@ class Settings(BaseSettings):
             port = self.POSTGRES_PORT or 5432
             db = self.POSTGRES_DB or "crm_db"
             self.DATABASE_URL = f"postgresql+asyncpg://{user}:{password}@{server}:{port}/{db}"
+            
+        # Strict validation for Production vs Development
+        if self.ENVIRONMENT == "production":
+            # Forbid localhost in production
+            if "localhost" in self.FRONTEND_URL or "127.0.0.1" in self.FRONTEND_URL:
+                self.FRONTEND_URL = "https://dev.ai-first-crm-hcp-module.pages.dev,https://curis.shadabjamadar.me"
+            
+            if "localhost" in self.REDIS_URL or "127.0.0.1" in self.REDIS_URL:
+                raise ValueError(
+                    "Localhost Redis is forbidden in production! "
+                    "Please configure a valid Upstash (or external) REDIS_URL in your environment."
+                )
+        elif self.ENVIRONMENT == "development":
+            # In development, keep whatever is provided (localhost with any port, or production URLs)
+            if not self.FRONTEND_URL:
+                self.FRONTEND_URL = "http://localhost:5173"
+            if not self.REDIS_URL:
+                self.REDIS_URL = "redis://localhost:6379/0"
+                
         return self
 
     # Redis
