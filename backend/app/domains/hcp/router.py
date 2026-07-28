@@ -12,6 +12,7 @@ from app.schemas.common import APIResponse
 router = APIRouter()
 
 
+@router.get("", response_model=APIResponse[List[HCPResponse]])
 @router.get("/", response_model=APIResponse[List[HCPResponse]])
 async def list_hcps(db: AsyncSession = Depends(get_db)) -> APIResponse[List[HCPResponse]]:
     hcps = await HCPService.get_all_hcps(db)
