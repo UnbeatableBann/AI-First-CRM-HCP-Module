@@ -40,21 +40,22 @@ class Settings(BaseSettings):
         else:
             self.REDIS_URL = self.REDIS_URL_DEV
             
-        # Strict validation for Production vs Development
+        # Environment-based validations
         if self.ENVIRONMENT == "production":
-            # Forbid localhost in production
-            if "localhost" in self.FRONTEND_URL or "127.0.0.1" in self.FRONTEND_URL:
-                self.FRONTEND_URL = "https://dev.ai-first-crm-hcp-module.pages.dev,https://curis.shadabjamadar.me"
-            
+            # Forbid localhost in production for Redis
             if "localhost" in self.REDIS_URL or "127.0.0.1" in self.REDIS_URL:
                 raise ValueError(
                     "Localhost Redis is forbidden in production! "
                     "Please configure a valid Upstash (or external) REDIS_URL_PROD in your environment."
                 )
+            
+            # Remove any localhost URLs from FRONTEND_URL in production
+            if self.FRONTEND_URL:
+                urls = [u.strip() for u in self.FRONTEND_URL.split(",")]
+                self.FRONTEND_URL = [u for u in urls if "localhost" not in u and "127.0.0.1" not in u]
         elif self.ENVIRONMENT == "development":
-            # In development, keep whatever is provided (localhost with any port, or production URLs)
-            if not self.FRONTEND_URL:
-                self.FRONTEND_URL = "http://localhost:5173"
+            # In development, we rely entirely on the .env values without filtering.
+            pass
                 
         return self
 
