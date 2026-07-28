@@ -7,6 +7,7 @@ export default function InteractionHomePage() {
   const navigate = useNavigate();
   const [missionData, setMissionData] = useState<any>(null);
   const [interactionData, setInteractionData] = useState<any>(null);
+  const [allHcps, setAllHcps] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -15,12 +16,14 @@ export default function InteractionHomePage() {
       try {
         setLoading(true);
         setError(null);
-        const [missionRes, interactionRes] = await Promise.all([
+        const [missionRes, interactionRes, hcpRes] = await Promise.all([
           api.get(`/mission-control`),
-          api.get('/interaction/home')
+          api.get('/interaction/home'),
+          api.get('/hcp')
         ]);
         setMissionData(missionRes.data.data);
         setInteractionData(interactionRes.data.data);
+        setAllHcps(hcpRes.data.data || []);
       } catch (error) {
         console.error('Failed to fetch data:', error);
         setError('Failed to load Mission Control feed.');
@@ -215,29 +218,56 @@ export default function InteractionHomePage() {
                 </tr>
               </thead>
               <tbody className="divide-y divide-border">
-                {interactionData.saved_hcps?.map((hcp: any) => (
-                  <tr 
-                    key={hcp.hcp_id} 
-                    className="hover:bg-surface-secondary/50 transition-colors cursor-pointer group"
-                    onClick={() => navigate(`/hcp/${hcp.hcp_id}`)}
-                  >
-                    <td className="px-6 py-5">
-                      <div className="flex items-center gap-4">
-                        <div className="w-10 h-10 rounded-full bg-surface-secondary border border-border flex items-center justify-center text-[14px] font-medium text-foreground">
-                          {hcp.hcp_name.split(' ').map((n: string) => n[0]).join('').substring(0, 2).replace('D', 'D.')}
+                {(() => {
+                  const allHcpsToDisplay = allHcps.map((hcp: any) => {
+                    const savedHcp = interactionData.saved_hcps?.find((s: any) => s.hcp_id === hcp.id);
+                    const hasCompleted = !!savedHcp;
+                    
+                    return {
+                      hcp_id: hcp.id,
+                      hcp_name: hcp.name,
+                      specialization: hcp.specialization || hcp.specialty,
+                      interaction_count: savedHcp ? savedHcp.interaction_count : 0,
+                      latest_interaction: savedHcp ? savedHcp.latest_interaction : null,
+                      isDraftOnly: !hasCompleted
+                    };
+                  }).sort((a, b) => {
+                    const aDate = a.latest_interaction ? new Date(a.latest_interaction).getTime() : 0;
+                    const bDate = b.latest_interaction ? new Date(b.latest_interaction).getTime() : 0;
+                    return bDate - aDate;
+                  });
+
+                  return allHcpsToDisplay.map((hcp: any) => (
+                    <tr 
+                      key={hcp.hcp_id} 
+                      className="hover:bg-surface-secondary/50 transition-colors cursor-pointer group"
+                      onClick={() => navigate(`/hcp/${hcp.hcp_id}`)}
+                    >
+                      <td className="px-6 py-5">
+                        <div className="flex items-center gap-4">
+                          <div className="w-10 h-10 rounded-full bg-surface-secondary border border-border flex items-center justify-center text-[14px] font-medium text-foreground">
+                            {hcp.hcp_name.startsWith('Dr') ? 'Dr.' : hcp.hcp_name.substring(0, 2).toUpperCase()}
+                          </div>
+                          <div>
+                            <div className="text-[14px] font-medium flex items-center gap-2 text-foreground group-hover:text-primary transition-colors">
+                              {hcp.hcp_name}
+                              {hcp.isDraftOnly && (
+                                <span className="px-1.5 py-0.5 bg-warning/10 text-warning text-[10px] font-bold uppercase tracking-wider rounded border border-warning/20">
+                                  Draft
+                                </span>
+                              )}
+                            </div>
+                            <div className="text-[12px] text-foreground-secondary mt-0.5">{hcp.specialization || hcp.specialty || 'Specialist'}</div>
+                          </div>
                         </div>
-                        <div>
-                          <div className="text-[14px] font-medium text-foreground group-hover:text-primary transition-colors">{hcp.hcp_name}</div>
-                          <div className="text-[12px] text-foreground-secondary mt-0.5">Specialist</div>
-                        </div>
-                      </div>
-                    </td>
-                    <td className="px-6 py-5 text-[14px] text-foreground-secondary">{hcp.interaction_count} documented</td>
-                    <td className="px-6 py-5 text-[14px] text-foreground-secondary">
-                      {hcp.latest_interaction ? new Date(hcp.latest_interaction).toLocaleDateString() : '—'}
-                    </td>
-                  </tr>
-                ))}
+                      </td>
+                      <td className="px-6 py-5 text-[14px] text-foreground-secondary">{hcp.interaction_count} documented</td>
+                      <td className="px-6 py-5 text-[14px] text-foreground-secondary">
+                        {hcp.latest_interaction ? new Date(hcp.latest_interaction).toLocaleDateString() : '—'}
+                      </td>
+                    </tr>
+                  ));
+                })()}
               </tbody>
             </table>
           </div>
@@ -254,10 +284,21 @@ export default function InteractionHomePage() {
                 .sort((a: any, b: any) => new Date(b.latest_interaction).getTime() - new Date(a.latest_interaction).getTime())
                 .slice(0, 5)
                 .map((hcp: any, idx: number) => (
-                <div key={idx} className="flex gap-4">
-                  <div className="shrink-0 w-5 h-5 rounded-full bg-surface border-2 border-primary mt-1 z-10"></div>
-                  <div>
-                    <div className="text-[14px] font-medium text-foreground">Interaction Completed</div>
+                <div key={idx} className="flex gap-4 relative">
+                  <div className={`shrink-0 w-5 h-5 rounded-full bg-surface border-2 border-primary mt-1 z-10 transition-all ${
+                    idx === 0 ? 'shadow-[0_0_12px_rgba(30,58,138,0.5)] scale-110 ring-2 ring-primary/20' : ''
+                  }`}>
+                    {idx === 0 && <div className="w-full h-full rounded-full animate-pulse bg-primary/20"></div>}
+                  </div>
+                  <div className={`flex-1 transition-all ${idx === 0 ? 'bg-primary/5 p-3 -mt-2 -mr-2 rounded-[16px] border border-primary/20 shadow-minimal' : ''}`}>
+                    <div className="text-[14px] font-medium text-foreground flex items-center gap-2">
+                      Interaction Completed
+                      {idx === 0 && (
+                        <span className="text-[9px] font-bold text-primary uppercase tracking-wider px-1.5 py-0.5 bg-primary/10 rounded border border-primary/20">
+                          Latest
+                        </span>
+                      )}
+                    </div>
                     <div className="text-[14px] text-foreground-secondary mt-1">
                       You met with <span className="font-medium text-foreground">{hcp.hcp_name}</span> and documented a new interaction.
                     </div>

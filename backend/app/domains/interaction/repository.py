@@ -39,17 +39,28 @@ class InteractionRepository(BaseRepository[Interaction, InteractionCreate, Inter
             select(
                 HCP.id.label("hcp_id"),
                 HCP.name.label("hcp_name"),
+                HCP.specialization.label("specialization"),
                 func.count(Interaction.id).label("interaction_count"),
                 func.max(Interaction.date).label("latest_interaction"),
             )
             .join(Interaction, Interaction.hcp_id == HCP.id)
             .where(Interaction.status == "COMPLETED", Interaction.is_deleted.is_(False))
-            .group_by(HCP.id, HCP.name)
+            .group_by(HCP.id, HCP.name, HCP.specialization)
             .order_by(func.max(Interaction.date).desc().nullslast())
         )
         result = await db.execute(query)
         return result.all()
 
+
+    async def get_all_interactions(self, db: AsyncSession) -> list[Interaction]:
+        from sqlalchemy.orm import joinedload
+        result = await db.execute(
+            select(Interaction)
+            .options(joinedload(Interaction.hcp))
+            .where(Interaction.is_deleted.is_(False))
+            .order_by(Interaction.updated_at.desc())
+        )
+        return list(result.scalars().all())
 
 interaction_repo = InteractionRepository(Interaction)
 

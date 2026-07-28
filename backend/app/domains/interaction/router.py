@@ -10,6 +10,13 @@ from app.schemas.common import APIResponse
 
 router = APIRouter()
 
+@router.get("", response_model=APIResponse[list[dict]])
+@router.get("/", response_model=APIResponse[list[dict]])
+async def get_all(
+    db: AsyncSession = Depends(get_db),
+) -> APIResponse[list[dict]]:
+    data = await InteractionService.get_all_interactions(db)
+    return APIResponse(status="success", message="All interactions loaded.", data=data)  # type: ignore
 
 @router.get("/home", response_model=APIResponse[InteractionHomeResponse])
 async def get_home(
@@ -44,6 +51,16 @@ async def update_interaction(
     db: AsyncSession = Depends(get_db),
 ) -> APIResponse[InteractionResponse]:
     interaction = await InteractionService.update_interaction(db, id, interaction_in)
+    
+    # Trigger pipeline on update to continuously refine learnings
+    if interaction and getattr(interaction, "hcp_id", None):
+        content = ""
+        try:
+            content = interaction.model_dump_json()
+        except BaseException:
+            content = str(interaction)
+        await dispatcher.publish(InteractionSavedEvent(interaction_id=id, hcp_id=interaction.hcp_id, content=content))
+
     return APIResponse(status="success", message="Interaction updated.", data=interaction)  # type: ignore
 
 

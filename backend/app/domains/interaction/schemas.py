@@ -70,7 +70,9 @@ class ChatMessageResponse(ChatMessageBase):
 
 class DraftResponse(BaseModel):
     id: UUID
+    hcp_id: Optional[UUID] = None
     hcp_name: Optional[str] = None
+    specialization: Optional[str] = None
     updated_at: datetime
     status: str
 
@@ -80,6 +82,7 @@ class DraftResponse(BaseModel):
 class SavedHCPResponse(BaseModel):
     hcp_id: UUID
     hcp_name: str
+    specialization: Optional[str] = None
     interaction_count: int
     latest_interaction: Optional[dt.date] = None
 

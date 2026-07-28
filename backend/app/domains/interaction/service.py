@@ -71,9 +71,12 @@ class InteractionService:
         drafts_res = []
         for d in drafts_db:
             hcp_name = d.hcp.name if getattr(d, 'hcp', None) else None
+            hcp_specialization = d.hcp.specialization if getattr(d, 'hcp', None) else None
             drafts_res.append({
                 "id": d.id,
+                "hcp_id": d.hcp_id,
                 "hcp_name": hcp_name,
+                "specialization": hcp_specialization,
                 "updated_at": d.updated_at,
                 "status": d.status
             })
@@ -82,6 +85,7 @@ class InteractionService:
             {
                 "hcp_id": row.hcp_id,
                 "hcp_name": row.hcp_name,
+                "specialization": row.specialization,
                 "interaction_count": row.interaction_count,
                 "latest_interaction": row.latest_interaction,
             }
@@ -92,6 +96,26 @@ class InteractionService:
             "drafts": drafts_res,
             "saved_hcps": saved_hcps_res,
         }
+
+    @staticmethod
+    async def get_all_interactions(db: AsyncSession) -> list[dict]:
+        interactions = await interaction_repo.get_all_interactions(db)
+        res = []
+        for i in interactions:
+            hcp_name = i.hcp.name if getattr(i, 'hcp', None) else None
+            hcp_specialization = i.hcp.specialization if getattr(i, 'hcp', None) else None
+            res.append({
+                "id": str(i.id),
+                "hcp_id": str(i.hcp_id) if i.hcp_id else None,
+                "hcp_name": hcp_name,
+                "specialization": hcp_specialization,
+                "status": i.status,
+                "interaction_type": i.interaction_type,
+                "date": i.date.isoformat() if i.date else None,
+                "updated_at": i.updated_at.isoformat() if i.updated_at else None,
+                "topics_discussed": i.topics_discussed,
+            })
+        return res
 
     @staticmethod
     async def delete_interaction(db: AsyncSession, interaction_id: uuid.UUID) -> None:
