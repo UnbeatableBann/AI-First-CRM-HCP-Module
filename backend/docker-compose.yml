@@ -12,7 +12,8 @@ services:
       - .env
     environment:
       - POSTGRES_SERVER=db
-      - REDIS_URL=redis://redis:6379/0
+      - REDIS_URL_DEV=redis://redis:6379/0
+      - REDIS_URL_PROD=rediss://default:gQAAAAAAAe0_AAIgcDE1ZTFmNWUyMjE5MjE0Yjc1ODEwMGJkYWJjZmNlNWQ4Zg@sunny-dolphin-126271.upstash.io:6379
       - PYTHONUNBUFFERED=1
     depends_on:
       db:

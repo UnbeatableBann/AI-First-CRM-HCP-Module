@@ -34,6 +34,12 @@ class Settings(BaseSettings):
             db = self.POSTGRES_DB or "crm_db"
             self.DATABASE_URL = f"postgresql+asyncpg://{user}:{password}@{server}:{port}/{db}"
             
+        # Select the correct Redis URL based on the environment
+        if self.ENVIRONMENT == "production":
+            self.REDIS_URL = self.REDIS_URL_PROD
+        else:
+            self.REDIS_URL = self.REDIS_URL_DEV
+            
         # Strict validation for Production vs Development
         if self.ENVIRONMENT == "production":
             # Forbid localhost in production
@@ -43,19 +49,19 @@ class Settings(BaseSettings):
             if "localhost" in self.REDIS_URL or "127.0.0.1" in self.REDIS_URL:
                 raise ValueError(
                     "Localhost Redis is forbidden in production! "
-                    "Please configure a valid Upstash (or external) REDIS_URL in your environment."
+                    "Please configure a valid Upstash (or external) REDIS_URL_PROD in your environment."
                 )
         elif self.ENVIRONMENT == "development":
             # In development, keep whatever is provided (localhost with any port, or production URLs)
             if not self.FRONTEND_URL:
                 self.FRONTEND_URL = "http://localhost:5173"
-            if not self.REDIS_URL:
-                self.REDIS_URL = "redis://localhost:6379/0"
                 
         return self
 
-    # Redis
-    REDIS_URL: str = Field(default="redis://localhost:6379/0")
+    # Redis configuration
+    REDIS_URL_DEV: str = Field(default="redis://localhost:6379/0")
+    REDIS_URL_PROD: str = Field(default="rediss://default:password@endpoint.upstash.io:6379/0")
+    REDIS_URL: str = Field(default="") # Dynamically populated based on environment
 
     # Groq API
     GROQ_API_KEY: str = Field(default="")
