@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, Path
+from fastapi import APIRouter, Depends, Path, Request
 from sqlalchemy.ext.asyncio import AsyncSession
 from typing import List
 import uuid
@@ -8,19 +8,26 @@ from app.domains.interaction.service import InteractionService
 from app.domains.hcp.schemas import HCPResponse
 from app.domains.interaction.schemas import InteractionResponse
 from app.schemas.common import APIResponse
+from app.core.cache import cache_response
 
 router = APIRouter()
 
 
 @router.get("", response_model=APIResponse[List[HCPResponse]])
 @router.get("/", response_model=APIResponse[List[HCPResponse]])
-async def list_hcps(db: AsyncSession = Depends(get_db)) -> APIResponse[List[HCPResponse]]:
+@cache_response(expire_seconds=3600)
+async def list_hcps(
+    request: Request,
+    db: AsyncSession = Depends(get_db)
+) -> APIResponse[List[HCPResponse]]:
     hcps = await HCPService.get_all_hcps(db)
     return APIResponse(status="success", message="HCPs retrieved.", data=hcps)  # type: ignore
 
 
 @router.get("/{id}", response_model=APIResponse[HCPResponse])
+@cache_response(expire_seconds=3600)
 async def get_hcp(
+    request: Request,
     id: uuid.UUID = Path(...),
     db: AsyncSession = Depends(get_db),
 ) -> APIResponse[HCPResponse]:
@@ -29,7 +36,9 @@ async def get_hcp(
 
 
 @router.get("/{id}/interactions", response_model=APIResponse[List[InteractionResponse]])
+@cache_response(expire_seconds=3600)
 async def get_hcp_history(
+    request: Request,
     id: uuid.UUID = Path(...),
     db: AsyncSession = Depends(get_db),
 ) -> APIResponse[List[InteractionResponse]]:

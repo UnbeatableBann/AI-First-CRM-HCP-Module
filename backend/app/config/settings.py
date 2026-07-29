@@ -24,7 +24,8 @@ class Settings(BaseSettings):
     POSTGRES_PORT: Optional[int] = Field(default=None)
 
     @model_validator(mode='after')
-    def assemble_db_connection(self) -> 'Settings':
+    def assemble_env_vars(self) -> 'Settings':
+        # Database URL
         if not self.DATABASE_URL:
             user = self.POSTGRES_USER or "postgres"
             password = self.POSTGRES_PASSWORD or "postgres"
@@ -32,10 +33,36 @@ class Settings(BaseSettings):
             port = self.POSTGRES_PORT or 5432
             db = self.POSTGRES_DB or "crm_db"
             self.DATABASE_URL = f"postgresql+asyncpg://{user}:{password}@{server}:{port}/{db}"
+            
+        # Select the correct Redis URL based on the environment
+        if self.ENVIRONMENT == "production":
+            self.REDIS_URL = self.REDIS_URL_PROD
+        else:
+            self.REDIS_URL = self.REDIS_URL_DEV
+            
+        # Environment-based validations
+        if self.ENVIRONMENT == "production":
+            # Forbid localhost in production for Redis
+            if "localhost" in self.REDIS_URL or "127.0.0.1" in self.REDIS_URL:
+                raise ValueError(
+                    "Localhost Redis is forbidden in production! "
+                    "Please configure a valid Upstash (or external) REDIS_URL_PROD in your environment."
+                )
+            
+            # Remove any localhost URLs from FRONTEND_URL in production
+            if self.FRONTEND_URL:
+                urls = [u.strip() for u in self.FRONTEND_URL.split(",")]
+                self.FRONTEND_URL = [u for u in urls if "localhost" not in u and "127.0.0.1" not in u]
+        elif self.ENVIRONMENT == "development":
+            # In development, we rely entirely on the .env values without filtering.
+            pass
+                
         return self
 
-    # Redis
-    REDIS_URL: str = Field(default="redis://localhost:6379/0")
+    # Redis configuration
+    REDIS_URL_DEV: str = Field(default="redis://localhost:6379/0")
+    REDIS_URL_PROD: str = Field(default="rediss://default:password@endpoint.upstash.io:6379/0")
+    REDIS_URL: str = Field(default="") # Dynamically populated based on environment
 
     # Groq API
     GROQ_API_KEY: str = Field(default="")

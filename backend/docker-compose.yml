@@ -3,21 +3,19 @@ services:
     image: redis:7
     ports:
       - "6379:6379"
+    restart: unless-stopped
 
   api:
-    build: .
+    image: unbeatablebann/ai-crm-backend:latest
     ports:
       - "8000:8000"
     env_file:
       - .env
     environment:
-      - POSTGRES_SERVER=db
+      # Database URL is now expected to be provided in the .env file pointing to a managed service
       - REDIS_URL=redis://redis:6379/0
       - PYTHONUNBUFFERED=1
     depends_on:
-      db:
-        condition: service_healthy
       redis:
         condition: service_started
-    volumes:
-      - .:/app
+    restart: unless-stopped

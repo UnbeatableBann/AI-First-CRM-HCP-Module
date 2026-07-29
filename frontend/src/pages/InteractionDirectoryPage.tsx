@@ -27,7 +27,7 @@ const InteractionDirectoryPage: React.FC = () => {
     const fetchInteractions = async () => {
       try {
         const response = await api.get('/interaction/');
-        console.log('Interactions API response:', response.data);
+        //console.log('Interactions API response:', response.data);
         if (response.data && response.data.data) {
           setInteractions(response.data.data);
         } else {
