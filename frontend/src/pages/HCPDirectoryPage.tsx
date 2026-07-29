@@ -23,13 +23,22 @@ export default function HCPDirectoryPage() {
           api.get('/hcp/'),
           api.get('/interaction/home')
         ]);
+        const hcpsData = hcpRes.data.data || [];
+        const intsData = intRes.data.data?.saved_hcps || [];
         
-        setHcps(hcpRes.data.data || []);
-        setInteractions(intRes.data.data?.saved_hcps || []);
+        setHcps(hcpsData);
+        setInteractions(intsData);
         
-        // Select first by default if available
-        if (hcpRes.data.data?.length > 0) {
-          handleSelectHcp(hcpRes.data.data[0]);
+        // Select latest by default if available
+        if (hcpsData.length > 0) {
+          const sortedHcps = [...hcpsData].sort((a, b) => {
+            const aInt = intsData.find((i: any) => i.hcp_id === a.id);
+            const bInt = intsData.find((i: any) => i.hcp_id === b.id);
+            const aDate = aInt?.latest_interaction ? new Date(aInt.latest_interaction).getTime() : 0;
+            const bDate = bInt?.latest_interaction ? new Date(bInt.latest_interaction).getTime() : 0;
+            return bDate - aDate;
+          });
+          handleSelectHcp(sortedHcps[0]);
         }
       } catch (err) {
         console.error(err);
