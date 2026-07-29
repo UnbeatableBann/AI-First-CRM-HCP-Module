@@ -41,6 +41,9 @@ install-all: install-backend install-frontend
 run:
 	$(MAKE) -j2 dev-frontend docker-up
 
+run-dev:
+	$(MAKE) -j2 dev-frontend docker-up-build
+
 run-prod:
 	$(MAKE) -j2 dev-frontend docker-up-prod
 
@@ -99,6 +102,9 @@ docker-build:
 
 docker-up:
 	cd $(BACKEND_DIR) && docker compose up
+
+docker-up-build:
+	cd $(BACKEND_DIR) && docker compose up --build
 
 docker-up-prod:
 	cd $(BACKEND_DIR) && docker compose -f docker-compose.prod.yml up
