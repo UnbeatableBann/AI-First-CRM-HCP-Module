@@ -27,7 +27,7 @@ const navItems = [
   { name: 'Mission Control', path: '/', icon: LayoutDashboard },
   { name: 'Healthcare Professionals', path: '/hcps', icon: Users },
   { name: 'Interactions', path: '/interactions', icon: MessageSquare },
-  { name: 'Knowledge', path: '/knowledge', icon: Brain },
+  { name: 'Curis Intelligence', path: '/knowledge', icon: Brain },
   { name: 'Planning', path: '/planning', icon: Calendar },
   { name: 'Literature', path: '/literature', icon: BookOpen },
   { name: 'Analytics', path: '/analytics', icon: BarChart },

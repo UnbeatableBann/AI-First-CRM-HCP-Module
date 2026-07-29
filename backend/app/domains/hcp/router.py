@@ -44,3 +44,19 @@ async def get_hcp_history(
 ) -> APIResponse[List[InteractionResponse]]:
     history = await InteractionService.get_hcp_history(db, id)
     return APIResponse(status="success", message="HCP history retrieved.", data=history)  # type: ignore
+
+from app.domains.hcp.intelligence_schemas import CurisIntelligence
+from app.domains.hcp.intelligence_service import IntelligenceService
+
+@router.get("/{id}/intelligence", response_model=APIResponse[CurisIntelligence])
+@cache_response(expire_seconds=86400) # 24 hours cache as per requirements
+async def get_hcp_intelligence(
+    request: Request,
+    id: uuid.UUID = Path(...),
+    db: AsyncSession = Depends(get_db),
+) -> APIResponse[CurisIntelligence]:
+    intelligence = await IntelligenceService.get_intelligence(db, id)
+    if not intelligence:
+        # Fallback empty or 404
+        return APIResponse(status="error", message="HCP Intelligence not found or could not be generated.", data=None) # type: ignore
+    return APIResponse(status="success", message="Curis Intelligence retrieved.", data=intelligence) # type: ignore

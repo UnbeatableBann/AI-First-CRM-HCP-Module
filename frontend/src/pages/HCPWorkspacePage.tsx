@@ -6,11 +6,11 @@ import { fetchWorkspace, setSelectedTab } from '../features/hcpWorkspace/hcpWork
 import HCPHeader from '../components/hcp/HCPHeader';
 import HCPOverview from '../components/hcp/HCPOverview';
 import HCPTimeline from '../components/hcp/HCPTimeline';
-import HCPKnowledgeTab from '../components/hcp/HCPKnowledgeTab';
+import CurisIntelligenceTab from '../components/intelligence/CurisIntelligenceTab';
 import HCPInsights from '../components/hcp/HCPInsights';
 import MeetingBriefTab from '../components/hcp/MeetingBriefTab';
 
-const TABS = ['Meeting Brief', 'Knowledge', 'Overview', 'Timeline', 'Insights'];
+const TABS = ['Meeting Brief', 'Curis Intelligence', 'Overview', 'Timeline', 'Insights'];
 
 const HCPWorkspacePage: React.FC = () => {
   const { hcpId } = useParams<{ hcpId: string }>();
@@ -80,8 +80,8 @@ const HCPWorkspacePage: React.FC = () => {
           {selectedTab === 'Meeting Brief' && (
             <MeetingBriefTab hcpId={hcpId!} />
           )}
-          {selectedTab === 'Knowledge' && (
-            <HCPKnowledgeTab hcpId={hcpId!} />
+          {selectedTab === 'Curis Intelligence' && (
+            <CurisIntelligenceTab hcpId={hcpId!} />
           )}
           {selectedTab === 'Overview' && (
             <HCPOverview 
