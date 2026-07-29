@@ -6,11 +6,11 @@ import { fetchWorkspace, setSelectedTab } from '../features/hcpWorkspace/hcpWork
 import HCPHeader from '../components/hcp/HCPHeader';
 import HCPOverview from '../components/hcp/HCPOverview';
 import HCPTimeline from '../components/hcp/HCPTimeline';
-import HCPMemory from '../components/hcp/HCPMemory';
+import HCPKnowledgeTab from '../components/hcp/HCPKnowledgeTab';
 import HCPInsights from '../components/hcp/HCPInsights';
 import MeetingBriefTab from '../components/hcp/MeetingBriefTab';
 
-const TABS = ['Meeting Brief', 'Overview', 'Timeline', 'AI Memory', 'Insights'];
+const TABS = ['Meeting Brief', 'Knowledge', 'Overview', 'Timeline', 'Insights'];
 
 const HCPWorkspacePage: React.FC = () => {
   const { hcpId } = useParams<{ hcpId: string }>();
@@ -80,6 +80,9 @@ const HCPWorkspacePage: React.FC = () => {
           {selectedTab === 'Meeting Brief' && (
             <MeetingBriefTab hcpId={hcpId!} />
           )}
+          {selectedTab === 'Knowledge' && (
+            <HCPKnowledgeTab hcpId={hcpId!} />
+          )}
           {selectedTab === 'Overview' && (
             <HCPOverview 
               overview={workspace.overview} 
@@ -89,9 +92,6 @@ const HCPWorkspacePage: React.FC = () => {
           )}
           {selectedTab === 'Timeline' && (
             <HCPTimeline timeline={workspace.timeline} />
-          )}
-          {selectedTab === 'AI Memory' && (
-            <HCPMemory memory={workspace.memory} />
           )}
           {selectedTab === 'Insights' && (
             <HCPInsights insights={workspace.insights} />
