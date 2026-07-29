@@ -82,3 +82,8 @@ venv.bak/
 *.sql
 pg_data/
 docker-compose.override.yml
+
+# =========================
+# Miscellaneous
+# =========================
+TODO.md
