@@ -18,18 +18,6 @@ def get_redis_client() -> Redis:
     return Redis(connection_pool=redis_pool)
 
 
-def _sa_to_dict(obj: Any) -> Any:
-    if hasattr(obj, '__table__'):  # SQLAlchemy model
-        return {c.name: getattr(obj, c.name) for c in obj.__table__.columns}
-    elif isinstance(obj, list):
-        return [_sa_to_dict(i) for i in obj]
-    elif isinstance(obj, dict):
-        return {k: _sa_to_dict(v) for k, v in obj.items()}
-    elif hasattr(obj, 'model_dump'):  # Pydantic model
-        d = obj.model_dump()
-        return {k: _sa_to_dict(v) for k, v in d.items()}
-    return obj
-
 def cache_response(expire_seconds: int = 3600):
     """
     Decorator to cache FastAPI route responses using Redis.
@@ -70,10 +58,15 @@ def cache_response(expire_seconds: int = 3600):
 
             if cache_key:
                 try:
-                    # First recursively convert SQLAlchemy objects to dicts
-                    safe_result = _sa_to_dict(result)
-                    # Then use jsonable_encoder to handle datetimes, UUIDs, etc.
-                    data_to_cache = jsonable_encoder(safe_result)
+                    from app.models.base import Base
+                    # Use jsonable_encoder with a custom encoder for SQLAlchemy models
+                    # This safely converts all nested Pydantic models, dicts, lists, and SQLAlchemy objects
+                    def sa_encoder(obj):
+                        if hasattr(obj, '__table__'):
+                            return {c.name: getattr(obj, c.name) for c in obj.__table__.columns}
+                        return str(obj)
+
+                    data_to_cache = jsonable_encoder(result, custom_encoder={Base: sa_encoder})
 
                     await client.setex(cache_key, expire_seconds, json.dumps(data_to_cache))
                 except Exception as e:

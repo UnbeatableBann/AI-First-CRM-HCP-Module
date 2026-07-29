@@ -5,6 +5,7 @@ import HCPHistoryPage from './pages/HCPHistoryPage';
 import HCPWorkspacePage from './pages/HCPWorkspacePage';
 import HCPDirectoryPage from './pages/HCPDirectoryPage';
 import InteractionDirectoryPage from './pages/InteractionDirectoryPage';
+import CurisIntelligencePage from './pages/CurisIntelligencePage';
 import { Layout } from './components/layout/Layout';
 
 function App() {
@@ -15,6 +16,7 @@ function App() {
           <Route path="/" element={<InteractionHomePage />} />
           <Route path="/interactions" element={<InteractionDirectoryPage />} />
           <Route path="/interactions/:id" element={<LogInteraction />} />
+          <Route path="/knowledge" element={<CurisIntelligencePage />} />
           <Route path="/hcps" element={<HCPDirectoryPage />} />
           <Route path="/hcps/:hcp_id/interactions" element={<HCPHistoryPage />} />
           <Route path="/hcp/:hcpId" element={<HCPWorkspacePage />} />

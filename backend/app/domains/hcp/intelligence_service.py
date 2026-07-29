@@ -12,14 +12,14 @@ from app.domains.hcp.intelligence_schemas import (
     Coaching, FutureExpectations, IntelligenceItem, ClinicalIntelligenceItem,
     KnowledgeGap
 )
-from app.domains.hcp.repository import HCPRepository
+from app.domains.hcp.repository import hcp_repo
 
 logger = logging.getLogger(__name__)
 
 class IntelligenceService:
     @staticmethod
     async def get_intelligence(db: AsyncSession, hcp_id: uuid.UUID) -> Optional[CurisIntelligence]:
-        hcp = await HCPRepository.get_hcp(db, hcp_id)
+        hcp = await hcp_repo.get(db, hcp_id)
         if not hcp:
             return None
             

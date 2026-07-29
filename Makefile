@@ -38,6 +38,9 @@ help:
 # Combined
 install-all: install-backend install-frontend
 
+dev-all:
+	$(MAKE) -j2 dev-frontend docker-up
+
 run:
 	$(MAKE) -j2 dev-frontend docker-up
 

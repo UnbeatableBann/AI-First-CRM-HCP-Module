@@ -5,34 +5,39 @@ const ContradictionCard = ({ contradictions }: { contradictions: any[] }) => {
   if (!contradictions || contradictions.length === 0) return null;
 
   return (
-    <div className="bg-white p-6 rounded-xl border border-red-200 shadow-sm mb-6">
-      <div className="flex items-center gap-2 mb-4">
-        <AlertTriangle className="w-5 h-5 text-red-500" />
-        <h3 className="text-lg font-semibold text-red-700">Identified Contradictions</h3>
+    <div className="bg-surface p-8 rounded-[24px] border border-danger/30 shadow-minimal mb-8">
+      <div className="flex items-center gap-3 mb-8">
+        <div className="w-10 h-10 rounded-full bg-danger/10 flex items-center justify-center border border-danger/20">
+          <AlertTriangle className="w-5 h-5 text-danger" />
+        </div>
+        <div>
+          <h3 className="text-[18px] font-medium text-danger">Identified Contradictions</h3>
+          <p className="text-[13px] text-danger/70">Conflicting signals in recent interactions</p>
+        </div>
       </div>
       
-      <div className="space-y-4">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         {contradictions.map((c, i) => (
-          <div key={i} className="bg-red-50 p-4 rounded-lg border border-red-100">
-            <h4 className="font-medium text-red-900 mb-2">{c.conflict}</h4>
+          <div key={i} className="bg-danger/5 p-6 rounded-[18px] border border-danger/20 flex flex-col">
+            <h4 className="font-medium text-danger mb-4 text-[15px]">{c.conflict}</h4>
             
-            <div className="flex items-start gap-4 mb-3 text-sm">
-              <div className="flex-1 bg-white p-2 rounded border border-red-100 shadow-sm text-gray-700">
-                <span className="text-[10px] uppercase font-bold text-gray-400 block mb-1">Previous Evidence</span>
-                {c.evidence.split(' vs ')[0] || 'Unknown'}
+            <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 mb-6 flex-1">
+              <div className="flex-1 bg-surface p-4 rounded-[12px] border border-danger/20 shadow-sm text-foreground">
+                <span className="text-[11px] uppercase font-medium tracking-wider text-muted block mb-2">Previous Evidence</span>
+                <span className="text-[13px]">{c.evidence.split(' vs ')[0] || 'Unknown'}</span>
               </div>
-              <div className="pt-3">
-                <ArrowRight className="w-4 h-4 text-red-300" />
+              <div className="flex items-center justify-center py-2 sm:py-0">
+                <ArrowRight className="w-4 h-4 text-danger/40 rotate-90 sm:rotate-0" />
               </div>
-              <div className="flex-1 bg-white p-2 rounded border border-red-100 shadow-sm text-gray-700">
-                <span className="text-[10px] uppercase font-bold text-gray-400 block mb-1">Recent Evidence</span>
-                {c.evidence.split(' vs ')[1] || 'Unknown'}
+              <div className="flex-1 bg-surface p-4 rounded-[12px] border border-danger/20 shadow-sm text-foreground">
+                <span className="text-[11px] uppercase font-medium tracking-wider text-muted block mb-2">Recent Evidence</span>
+                <span className="text-[13px]">{c.evidence.split(' vs ')[1] || 'Unknown'}</span>
               </div>
             </div>
             
-            <div className="bg-white p-3 rounded border border-red-200">
-              <span className="text-xs font-semibold text-red-500 uppercase tracking-wider block mb-1">Action Required</span>
-              <p className="text-sm text-red-800">{c.recommendation}</p>
+            <div className="bg-surface p-4 rounded-[12px] border border-danger/20">
+              <span className="text-[11px] font-medium text-danger uppercase tracking-wider block mb-1">Action Required</span>
+              <p className="text-[14px] text-danger font-medium">{c.recommendation}</p>
             </div>
           </div>
         ))}

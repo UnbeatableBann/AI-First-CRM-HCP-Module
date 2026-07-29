@@ -49,7 +49,6 @@ from app.domains.hcp.intelligence_schemas import CurisIntelligence
 from app.domains.hcp.intelligence_service import IntelligenceService
 
 @router.get("/{id}/intelligence", response_model=APIResponse[CurisIntelligence])
-@cache_response(expire_seconds=86400) # 24 hours cache as per requirements
 async def get_hcp_intelligence(
     request: Request,
     id: uuid.UUID = Path(...),

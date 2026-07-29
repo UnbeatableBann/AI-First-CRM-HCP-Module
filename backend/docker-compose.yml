@@ -7,6 +7,8 @@ services:
 
   api:
     image: unbeatablebann/ai-crm-backend:latest
+    volumes:
+      - ./:/app
     ports:
       - "8000:8000"
     env_file:
