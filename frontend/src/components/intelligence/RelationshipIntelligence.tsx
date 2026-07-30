@@ -1,4 +1,3 @@
-import React from 'react';
 import { HeartHandshake } from 'lucide-react';
 
 const Metric = ({ label, value }: { label: string, value: string }) => (

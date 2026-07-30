@@ -6,7 +6,7 @@ import { ChevronDown, User } from 'lucide-react';
 const CurisIntelligencePage: React.FC = () => {
   const [hcps, setHcps] = useState<any[]>([]);
   const [selectedHcpId, setSelectedHcpId] = useState<string | null>(null);
-  const [loading, setLoading] = useState(true);
+  
   const [dropdownOpen, setDropdownOpen] = useState(false);
 
   useEffect(() => {
@@ -35,7 +35,7 @@ const CurisIntelligencePage: React.FC = () => {
       } catch (err) {
         console.error('Error fetching HCPs:', err);
       } finally {
-        setLoading(false);
+        
       }
     };
     fetchHcps();
@@ -54,8 +54,12 @@ const CurisIntelligencePage: React.FC = () => {
               onClick={() => setDropdownOpen(!dropdownOpen)}
               className="flex items-center gap-3 bg-surface hover:bg-surface-secondary px-5 py-3 rounded-[16px] border border-border shadow-minimal transition-all"
             >
-              <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center text-primary">
-                <User className="w-4 h-4" />
+              <div className="w-10 h-10 rounded-full bg-surface-secondary border-2 border-primary/20 overflow-hidden flex items-center justify-center shrink-0">
+                {selectedHcp ? (
+                  <img src={`https://ui-avatars.com/api/?name=${encodeURIComponent(selectedHcp.name)}&background=random&color=fff&size=128`} alt={selectedHcp.name} className="w-full h-full object-cover" />
+                ) : (
+                  <User className="w-4 h-4 text-muted" />
+                )}
               </div>
               <div className="text-left">
                 <div className="text-[12px] font-medium text-muted uppercase tracking-wider mb-0.5">Selected HCP Profile</div>
@@ -69,7 +73,7 @@ const CurisIntelligencePage: React.FC = () => {
             {/* Dropdown */}
             {dropdownOpen && (
               <div className="absolute top-full left-0 mt-2 w-80 max-h-[400px] overflow-y-auto bg-surface border border-border shadow-minimal rounded-[16px] z-50 p-2">
-                {hcps.map(hcp => (
+                {hcps.map((hcp) => (
                   <button
                     key={hcp.id}
                     onClick={() => {
@@ -80,8 +84,8 @@ const CurisIntelligencePage: React.FC = () => {
                       selectedHcpId === hcp.id ? 'bg-primary/5 text-primary' : 'hover:bg-surface-secondary text-foreground'
                     }`}
                   >
-                    <div className="w-8 h-8 rounded-full bg-surface-secondary border border-border flex items-center justify-center shrink-0">
-                      <User className="w-4 h-4 text-muted" />
+                    <div className="w-9 h-9 rounded-full bg-surface-secondary border border-border overflow-hidden shrink-0 flex items-center justify-center">
+                      <img src={`https://ui-avatars.com/api/?name=${encodeURIComponent(hcp.name)}&background=random&color=fff&size=128`} alt={hcp.name} className="w-full h-full object-cover" />
                     </div>
                     <div>
                       <div className="text-[14px] font-medium">{hcp.name}</div>
@@ -100,8 +104,8 @@ const CurisIntelligencePage: React.FC = () => {
         ) : (
           <div className="flex items-center justify-center h-64 bg-surface rounded-[24px] border border-border">
             <div className="text-center">
-              <div className="w-12 h-12 bg-surface-secondary rounded-full flex items-center justify-center mx-auto mb-4 border border-border">
-                <User className="w-6 h-6 text-muted" />
+              <div className="w-16 h-16 bg-surface-secondary rounded-full flex items-center justify-center mx-auto mb-4 border border-border overflow-hidden">
+                <User className="w-8 h-8 text-muted" />
               </div>
               <p className="text-[15px] font-medium text-foreground">Select an HCP to view Intelligence</p>
               <p className="text-[13px] text-muted mt-1">Choose a profile from the dropdown above</p>

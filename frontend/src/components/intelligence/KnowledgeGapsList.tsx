@@ -1,4 +1,3 @@
-import React from 'react';
 import { SearchX, HelpCircle } from 'lucide-react';
 
 const KnowledgeGapsList = ({ gaps }: { gaps: any[] }) => {

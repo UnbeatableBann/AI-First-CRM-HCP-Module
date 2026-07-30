@@ -1,4 +1,3 @@
-import React from 'react';
 import { AlertTriangle, ArrowRight } from 'lucide-react';
 
 const ContradictionCard = ({ contradictions }: { contradictions: any[] }) => {

@@ -1,4 +1,3 @@
-import React from 'react';
 import { ShieldCheck, Clock, CheckCircle2, Activity, Zap } from 'lucide-react';
 
 const StatusPanel = ({ header }: { header: any }) => {

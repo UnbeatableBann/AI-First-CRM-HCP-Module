@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import { useContext } from 'react';
 import { Lightbulb, Search } from 'lucide-react';
 import { EvidenceContext } from './CurisIntelligenceTab';
 

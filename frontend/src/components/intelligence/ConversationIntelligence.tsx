@@ -1,4 +1,3 @@
-import React from 'react';
 import { MessageSquareText } from 'lucide-react';
 
 const FlowItem = ({ label, value }: { label: string, value: string }) => (

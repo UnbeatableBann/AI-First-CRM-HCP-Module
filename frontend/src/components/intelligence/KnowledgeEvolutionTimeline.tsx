@@ -1,4 +1,3 @@
-import React from 'react';
 import { History, GitCommit } from 'lucide-react';
 
 const KnowledgeEvolutionTimeline = ({ timeline }: { timeline: any[] }) => {

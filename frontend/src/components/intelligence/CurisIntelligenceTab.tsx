@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef } from 'react';
+import React, { useEffect, useState } from 'react';
 import api from '../../services/api/axios';
 import IntelligenceHeader from './IntelligenceHeader';
 import PlaybookCard from './PlaybookCard';
@@ -192,53 +192,64 @@ const CurisIntelligenceTab: React.FC<CurisIntelligenceTabProps> = ({ hcpId }) =>
           </div>
 
           {/* CENTER: Intelligence Sections */}
-          <div className="flex-1 min-w-0 space-y-8">
-            <div id="section-playbook">
-              <PlaybookCard playbook={data.playbook} />
-            </div>
-            
-            <div id="section-decision_dna">
-              <DecisionDNACard dna={data.decision_dna} />
-            </div>
-            
-            <div id="section-clinical">
-              <ClinicalIntelligence clinical={data.clinical_intelligence} />
-            </div>
-            
-            <div id="section-relationship">
-              <RelationshipIntelligence relationship={data.relationship_intelligence} />
-            </div>
-            
-            <div id="section-conversation">
-              <ConversationIntelligence conversation={data.conversation_intelligence} />
-            </div>
-            
-            <div id="section-gaps">
-              <KnowledgeGapsList gaps={data.knowledge_gaps} />
-            </div>
-            
-            {data.contradictions?.length > 0 && (
-              <div id="section-contradictions">
-                <ContradictionCard contradictions={data.contradictions} />
+          <div className="flex-1 min-w-0">
+            <div className="grid grid-cols-1 xl:grid-cols-2 gap-8">
+              {/* Left Column */}
+              <div className="space-y-8">
+                <div id="section-playbook">
+                  <PlaybookCard playbook={data.playbook} />
+                </div>
+                
+                <div id="section-clinical">
+                  <ClinicalIntelligence clinical={data.clinical_intelligence} />
+                </div>
+
+                <div id="section-conversation">
+                  <ConversationIntelligence conversation={data.conversation_intelligence} />
+                </div>
+
+                <div id="section-coaching">
+                  <CoachingCard coaching={data.coaching} />
+                </div>
               </div>
-            )}
-            
-            {data.opportunities?.length > 0 && (
-              <div id="section-opportunities">
-                <OpportunitiesList opportunities={data.opportunities} />
+
+              {/* Right Column */}
+              <div className="space-y-8">
+                <div id="section-decision_dna">
+                  <DecisionDNACard dna={data.decision_dna} />
+                </div>
+                
+                <div id="section-relationship">
+                  <RelationshipIntelligence relationship={data.relationship_intelligence} />
+                </div>
+                
+                <div id="section-gaps">
+                  <KnowledgeGapsList gaps={data.knowledge_gaps} />
+                </div>
+
+                <div id="section-future">
+                  <PredictionsCard predictions={data.predictions} />
+                </div>
               </div>
-            )}
-            
-            <div id="section-coaching">
-              <CoachingCard coaching={data.coaching} />
             </div>
-            
-            <div id="section-future">
-              <PredictionsCard predictions={data.predictions} />
-            </div>
-            
-            <div id="section-evolution">
-              <KnowledgeEvolutionTimeline timeline={data.timeline} />
+
+            {/* Full-width Sections Below */}
+            <div className="mt-8 space-y-8">
+              {data.contradictions?.length > 0 && (
+                <div id="section-contradictions">
+                  <ContradictionCard contradictions={data.contradictions} />
+                </div>
+              )}
+              
+              {data.opportunities?.length > 0 && (
+                <div id="section-opportunities">
+                  <OpportunitiesList opportunities={data.opportunities} />
+                </div>
+              )}
+              
+              <div id="section-evolution">
+                <KnowledgeEvolutionTimeline timeline={data.timeline} />
+              </div>
             </div>
           </div>
 

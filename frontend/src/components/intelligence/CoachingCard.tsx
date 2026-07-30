@@ -1,4 +1,3 @@
-import React from 'react';
 import { Target, CheckCircle2, AlertCircle } from 'lucide-react';
 
 const CoachingSection = ({ title, items, isPositive }: { title: string, items: string[], isPositive: boolean }) => {
